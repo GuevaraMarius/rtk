@@ -2,7 +2,11 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <div className="w-full h-[10vh] bg-slate-500">footer</div>
+    <footer className="bg-gray-900 p-4 mt-8">
+      <div className="container mx-auto text-center text-gray-300">
+        <p>&copy; {new Date().getFullYear()} Game of Thrones Houses. All rights reserved.</p>
+      </div>
+    </footer>
   )
 }
 

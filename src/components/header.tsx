@@ -1,25 +1,24 @@
-import { addToCart, removeFromCart, resetCart } from '@/lib/slices/cart';
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
+import Link from 'next/link';
 
 const Header = () => {
-  const dispatch=useDispatch();
-  const handleClick= ()=>{
-    dispatch(addToCart());
-  }
-  const handleRemove= ()=>{
-    dispatch(removeFromCart());
-  }
-  const handleReset= ()=>{
-    dispatch(resetCart());
-  }
   return (
     <>
-    <button onClick={handleClick}>Add To cart</button> 
-    <br/>
-    <button onClick={handleRemove}>Remove To cart</button>
-    <br/>
-    <button onClick={handleReset}>Reset cart</button>
+     <nav className="bg-gray-900 p-4 shadow">
+      <div className="container mx-auto flex justify-between">
+        <Link href="/">
+          <span className="text-white text-lg font-bold">Houses</span>
+        </Link>
+        <div>
+          <Link href="/">
+            <span className="text-gray-300 hover:text-white mx-2">Home</span>
+          </Link>
+          <Link href="/">
+            <span className="text-gray-300 hover:text-white mx-2">About</span>
+          </Link>
+        </div>
+      </div>
+    </nav>
     </>
   )
 }
