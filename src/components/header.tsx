@@ -1,26 +1,31 @@
-import React from 'react'
+import React from 'react';
 import Link from 'next/link';
+import { Layout, Menu } from 'antd';
+
+const { Header: AntHeader } = Layout;
 
 const Header = () => {
   return (
-    <>
-     <nav className="bg-gray-900 p-4 shadow">
-      <div className="container mx-auto flex justify-between">
+    <AntHeader style={{ backgroundColor: '#001529' }}>
+      <div className="container mx-auto flex justify-between items-center">
         <Link href="/">
-          <span className="text-white text-lg font-bold">Houses</span>
+          <span className="text-white text-lg font-bold cursor-pointer">Houses</span>
         </Link>
-        <div>
-          <Link href="/">
-            <span className="text-gray-300 hover:text-white mx-2">Home</span>
-          </Link>
-          <Link href="/">
-            <span className="text-gray-300 hover:text-white mx-2">About</span>
-          </Link>
-        </div>
+        <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }} selectable={false}>
+          <Menu.Item key="home">
+            <Link href="/">
+              <span className="text-gray-300 hover:text-white">Home</span>
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="about">
+            <Link href="/">
+              <span className="text-gray-300 hover:text-white">About</span>
+            </Link>
+          </Menu.Item>
+        </Menu>
       </div>
-    </nav>
-    </>
-  )
-}
+    </AntHeader>
+  );
+};
 
-export default Header
+export default Header;
