@@ -1,19 +1,29 @@
 import { useGetCharacterByIdQuery, useGetHouseByIdQuery } from '@/lib/api';
 import { isErrorWithMessage, isFetchBaseQueryError } from '@/utils/errorHandler';
 import { useRouter } from 'next/router';
+import { Card, Button, Spin, Alert, Descriptions, Typography } from 'antd';
+
+const { Title, Text } = Typography;
 
 const HouseDetails = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { data: house, error, isLoading } = useGetHouseByIdQuery(id);
-  
+
   const currentLordId = house?.currentLord ? house.currentLord.split('/').pop() : null;
   const { data: currentLord, isLoading: isLoadingLord } = useGetCharacterByIdQuery(currentLordId || '', { skip: !currentLordId });
 
   const overlordId = house?.overlord ? house.overlord.split('/').pop() : null;
   const { data: overlord, isLoading: isLoadingOverlord } = useGetCharacterByIdQuery(overlordId || '', { skip: !overlordId });
 
-  if (isLoading || isLoadingLord || isLoadingOverlord) return <div className="text-center mt-20">Loading...</div>;
+  if (isLoading || isLoadingLord || isLoadingOverlord) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 128px)' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   if (error) {
     let errorMessage = 'An error occurred';
     if (isFetchBaseQueryError(error)) {
@@ -21,53 +31,49 @@ const HouseDetails = () => {
     } else if (isErrorWithMessage(error)) {
       errorMessage = `Error: ${error.message}`;
     }
-    return <div className="text-center mt-20">{errorMessage}</div>;
+    return <Alert message={errorMessage} type="error" showIcon style={{ margin: '20px' }} />;
   }
+
   return (
     <div className="container mx-auto px-4">
-    <div className="bg-white shadow-md rounded-lg overflow-hidden my-8">
-      <div className="bg-gray-800 p-4">
-        <h1 className="text-3xl text-white font-bold text-center">{house?.name}</h1>
-        <p className="text-gray-300 text-center">{house?.region}</p>
-      </div>
-      <div className="p-6">
-       <div className="mb-4">
-          <h2 className="text-2xl font-semibold">Current Lord:</h2>
-          {currentLord ? (
-            <div>
-              <p><strong>Name:</strong> {currentLord.name}</p>
-              <p><strong>Gender:</strong> {currentLord.gender}</p>
-              <p><strong>Aliases:</strong> {currentLord.aliases.join(', ') || 'N/A'}</p>
-            </div>
-          ) : (
-            <p>N/A</p>
-          )}
+      <Card style={{ marginBottom: '20px' }}>
+        <div>
+          <Title level={2}>{house?.name}</Title>
+          <Text>{house?.region}</Text>
         </div>
+        <div className="p-6">
+          <Descriptions title="Details" bordered column={1}>
+            <Descriptions.Item label="Current Lord">
+              {currentLord ? (
+                <div>
+                  <Text strong>Name:</Text> {currentLord.name}<br />
+                  <Text strong>Gender:</Text> {currentLord.gender}<br />
+                  <Text strong>Aliases:</Text> {currentLord.aliases.join(', ') || 'N/A'}
+                </div>
+              ) : (
+                <Text>N/A</Text>
+              )}
+            </Descriptions.Item>
 
-        <div className="mb-4">
-          <h2 className="text-2xl font-semibold">Overlord:</h2>
-          {overlord ? (
-            <div>
-              <p><strong>Name:</strong> {overlord.name}</p>
-              <p><strong>Region:</strong> {overlord.region || 'N/A'}</p>
-              <p><strong>Founded:</strong> {overlord.founded || 'N/A'}</p>
-            </div>
-          ) : (
-            <p>N/A</p>
-          )}
-        </div>
+            <Descriptions.Item label="Overlord">
+              {overlord ? (
+                <div>
+                  <Text strong>Name:</Text> {overlord.name}<br />
+                  <Text strong>Region:</Text> {overlord.region || 'N/A'}<br />
+                  <Text strong>Founded:</Text> {overlord.founded || 'N/A'}
+                </div>
+              ) : (
+                <Text>N/A</Text>
+              )}
+            </Descriptions.Item>
+          </Descriptions>
 
-        <div className="flex justify-center">
-          <button
-            onClick={() => router.push('/')}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Back to Houses
-          </button>
+          <div className="flex justify-center mt-4">
+            <Button onClick={() => router.push('/')} type="primary">Back to Houses</Button>
+          </div>
         </div>
-      </div>
+      </Card>
     </div>
-  </div>
   );
 };
 
